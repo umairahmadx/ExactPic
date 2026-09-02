@@ -1,0 +1,77 @@
+name: Android Release Build
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build & Test Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Setup Release Signing Key
+        id: signing_setup
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          SECRET_STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          SECRET_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          # If a custom release keystore secret is provided, decode it.
+          # Otherwise, generate a self-contained release key so CI builds an installable Release APK out of the box.
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "Using release keystore provided via repository secrets..."
+            echo "$KEYSTORE_BASE64" | base64 -d > my-upload-key.jks
+            echo "STORE_PWD=${SECRET_STORE_PASSWORD}" >> $GITHUB_ENV
+            echo "KEY_PWD=${SECRET_KEY_PASSWORD}" >> $GITHUB_ENV
+          else
+            echo "Generating self-contained release upload key for CI..."
+            keytool -genkeypair -v \
+              -keystore my-upload-key.jks \
+              -alias upload \
+              -keypass exactpicpass \
+              -storepass exactpicpass \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=ExactPic Release,O=Umair,C=US"
+            echo "STORE_PWD=exactpicpass" >> $GITHUB_ENV
+            echo "KEY_PWD=exactpicpass" >> $GITHUB_ENV
+          fi
+
+      - name: Run Unit & Robolectric Tests
+        run: ./gradlew testDebugUnitTest --stacktrace
+
+      - name: Build Release APK
+        env:
+          STORE_PASSWORD: ${{ env.STORE_PWD }}
+          KEY_PASSWORD: ${{ env.KEY_PWD }}
+        run: ./gradlew assembleRelease --stacktrace
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ExactPic-release-apk
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 14
