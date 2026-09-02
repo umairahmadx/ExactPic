@@ -31,6 +31,14 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Verify Gradle Version Catalog exists
+        run: |
+          if [ ! -f "gradle/libs.versions.toml" ]; then
+            echo "::error::gradle/libs.versions.toml is missing from the repository checkout!"
+            echo "::error::Please ensure you committed the 'gradle/' directory by running: git add gradle/ && git commit -m 'Add gradle catalog and wrapper' && git push"
+            exit 1
+          fi
+
       - name: Setup Release Signing Key
         id: signing_setup
         env:

@@ -108,7 +108,17 @@ Many official portals—such as government visa portals, passport renewal system
 - **Android SDK**: compileSdk 36, minSdk 24
 - **Android Studio**: Ladybug (2024.2.1) or newer
 
-### Commands
+### Pushing to GitHub (Important)
+
+When pushing the project to your GitHub repository, ensure the `gradle/` folder (including `gradle/libs.versions.toml` and `gradle/wrapper/`) is committed:
+```bash
+git add gradle/ gradlew app/ build.gradle.kts settings.gradle.kts README.md .github/
+git commit -m "Add project files, Gradle Version Catalog, and CI workflow"
+git push origin main
+```
+*(Note: If `gradle/libs.versions.toml` is omitted or ignored, Gradle will fail with `Unresolved reference 'libs'`)*
+
+### Command Line Build
 
 1. **Clone the repository**:
    ```bash
