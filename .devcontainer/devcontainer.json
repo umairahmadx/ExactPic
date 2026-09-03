@@ -1,0 +1,45 @@
+{
+  "name": "Kotlin, Java & Android Development",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {
+      "ANDROID_API_LEVEL": "35",
+      "ANDROID_BUILD_TOOLS": "35.0.0",
+      "ANDROID_CMDLINE_TOOLS": "13114758"
+    }
+  },
+  "remoteUser": "vscode",
+  "containerEnv": {
+    "ANDROID_HOME": "/opt/android-sdk",
+    "ANDROID_SDK_ROOT": "/opt/android-sdk",
+    "JAVA_HOME": "/usr/local/sdkman/candidates/java/current"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "fwcd.kotlin",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-gradle",
+        "redhat.java",
+        "pkief.material-icon-theme"
+      ],
+      "settings": {
+        "java.configuration.runtimes": [
+          {
+            "name": "JavaSE-17",
+            "path": "/usr/local/sdkman/candidates/java/current",
+            "default": true
+          }
+        ],
+        "kotlin.languageServer.enabled": true,
+        "gradle.nestedProjects": true
+      }
+    }
+  },
+  "postCreateCommand": "java -version && kotlinc -version && sdkmanager --version && adb version",
+  "forwardPorts": [],
+  "mounts": [
+    "source=gradle-cache-${devcontainerId},target=/home/vscode/.gradle,type=volume"
+  ]
+}
