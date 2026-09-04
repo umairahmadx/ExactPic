@@ -19,11 +19,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK components
+        run: sdkmanager "platform-tools" "platforms;android-36" "build-tools;35.0.0" "build-tools;34.0.0"
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -71,15 +77,17 @@ jobs:
       - name: Run Unit & Robolectric Tests
         run: ./gradlew testDebugUnitTest --stacktrace
 
-      - name: Build Release APK
+      - name: Build Debug and Release APKs
         env:
           STORE_PASSWORD: ${{ env.STORE_PWD }}
           KEY_PASSWORD: ${{ env.KEY_PWD }}
-        run: ./gradlew assembleRelease --stacktrace
+        run: ./gradlew assembleDebug assembleRelease --stacktrace --no-daemon --max-workers=2
 
-      - name: Upload Release APK Artifact
+      - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ExactPic-release-apk
-          path: app/build/outputs/apk/release/*.apk
+          name: ExactPic-apks
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/apk/release/*.apk
           retention-days: 14

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data-extraction-rules>
     <cloud-backup disableIfNoEncryptionCapabilities="true">
-        <exclude domain="sharedpref" path="." />
-        <exclude domain="database" path="." />
+        <include domain="file" path="." requireFlags="clientSideEncryption" />
+        <include domain="file" path="." requireFlags="deviceToDeviceTransfer" />
     </cloud-backup>
     <device-transfer>
-        <exclude domain="sharedpref" path="." />
-        <exclude domain="database" path="." />
+        <include domain="file" path="." />
     </device-transfer>
 </data-extraction-rules>
