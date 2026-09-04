@@ -4,8 +4,9 @@
     "dockerfile": "Dockerfile",
     "context": "..",
     "args": {
-      "ANDROID_API_LEVEL": "35",
+      "ANDROID_API_LEVEL": "36",
       "ANDROID_BUILD_TOOLS": "35.0.0",
+      "ANDROID_EMULATOR_API_LEVEL": "35",
       "ANDROID_CMDLINE_TOOLS": "13114758"
     }
   },
@@ -37,7 +38,7 @@
       }
     }
   },
-  "postCreateCommand": "java -version && kotlinc -version && sdkmanager --version && adb version",
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
   "forwardPorts": [],
   "mounts": [
     "source=gradle-cache-${devcontainerId},target=/home/vscode/.gradle,type=volume"

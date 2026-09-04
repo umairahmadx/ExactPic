@@ -1,7 +1,8 @@
 FROM mcr.microsoft.com/devcontainers/java:1-17-bookworm
 
-ARG ANDROID_API_LEVEL=35
+ARG ANDROID_API_LEVEL=36
 ARG ANDROID_BUILD_TOOLS=35.0.0
+ARG ANDROID_EMULATOR_API_LEVEL=35
 ARG ANDROID_CMDLINE_TOOLS=13114758
 ARG KOTLIN_VERSION=2.1.21
 
@@ -20,6 +21,22 @@ RUN rm -f /etc/apt/sources.list.d/yarn.list /etc/apt/sources.list.d/yarn.sources
         lib32z1 \
         libc6-i386 \
         qemu-kvm \
+        libpulse0 \
+        libglu1-mesa \
+        libnss3 \
+        libx11-6 \
+        libx11-xcb1 \
+        libxcb1 \
+        libxcursor1 \
+        libxdamage1 \
+        libxi6 \
+        libxkbcommon0 \
+        libxrandr2 \
+        libxtst6 \
+        mesa-utils \
+        git \
+        curl \
+        zip \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p "${ANDROID_HOME}/cmdline-tools" \
     && wget -q "https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_CMDLINE_TOOLS}_latest.zip" -O /tmp/android-sdk.zip \
@@ -27,7 +44,13 @@ RUN rm -f /etc/apt/sources.list.d/yarn.list /etc/apt/sources.list.d/yarn.sources
     && mv "${ANDROID_HOME}/cmdline-tools/cmdline-tools" "${ANDROID_HOME}/cmdline-tools/latest" \
     && rm /tmp/android-sdk.zip \
     && yes | sdkmanager --licenses >/dev/null || true \
-    && sdkmanager "platform-tools" "platforms;android-${ANDROID_API_LEVEL}" "build-tools;${ANDROID_BUILD_TOOLS}" "emulator" \
+    && sdkmanager "platform-tools" \
+        "platforms;android-${ANDROID_API_LEVEL}" \
+        "platforms;android-35" \
+        "build-tools;${ANDROID_BUILD_TOOLS}" \
+        "build-tools;34.0.0" \
+        "emulator" \
+        "system-images;android-${ANDROID_EMULATOR_API_LEVEL};google_apis;x86_64" \
     && chown -R vscode:vscode "${ANDROID_HOME}" \
     && chmod -R a+rX "${ANDROID_HOME}"
 
