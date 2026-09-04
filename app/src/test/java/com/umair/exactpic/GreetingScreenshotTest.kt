@@ -5,7 +5,6 @@ import androidx.compose.ui.test.onRoot
 import com.umair.exactpic.ui.ImagePadderScreen
 import com.umair.exactpic.ui.theme.MyApplicationTheme
 import com.umair.exactpic.viewmodel.ImagePadderViewModel
-import com.github.takahirom.roborazzi.RobolectricDeviceQualifiers
 import com.github.takahirom.roborazzi.captureRoboImage
 import org.junit.Rule
 import org.junit.Test
@@ -16,7 +15,7 @@ import org.robolectric.annotation.GraphicsMode
 
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(qualifiers = RobolectricDeviceQualifiers.Pixel8, sdk = [36])
+@Config(qualifiers = "w393dp-h851dp", sdk = [35])
 class GreetingScreenshotTest {
 
   @get:Rule val composeTestRule = createComposeRule()

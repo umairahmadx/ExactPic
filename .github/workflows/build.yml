@@ -75,7 +75,7 @@ jobs:
           fi
 
       - name: Run Unit & Robolectric Tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        run: ./gradlew testDebugUnitTest testReleaseUnitTest --stacktrace --no-daemon --max-workers=2 -Dkotlin.compiler.execution.strategy=in-process
 
       - name: Build Debug and Release APKs
         env:

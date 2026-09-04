@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.Test
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.android)
@@ -52,6 +54,12 @@ android {
   dependenciesInfo {
     includeInApk = false
     includeInBundle = true
+  }
+}
+
+tasks.withType<Test>().configureEach {
+  if (name == "testReleaseUnitTest") {
+    exclude("**/GreetingScreenshotTest.class")
   }
 }
 
