@@ -143,17 +143,6 @@ fun ImagePadderScreen(
                                 tint = AppColors.IconWhite
                             )
                         }
-                    } else if (uiState.currentTab != 0) {
-                        IconButton(
-                            onClick = { viewModel.switchTab(0) },
-                            modifier = Modifier.testTag("app_bar_back_to_canvas_button")
-                        ) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back to Canvas",
-                                tint = AppColors.IconWhite
-                            )
-                        }
                     } else {
                         Box(
                             modifier = Modifier

@@ -55,8 +55,6 @@ import com.umair.exactpic.ui.theme.AppColors
 import com.umair.exactpic.viewmodel.PadderUiState
 import kotlinx.coroutines.delay
 
-enum class CompareViewMode { RESULT, ORIGINAL, SPLIT }
-
 @Composable
 fun ProcessedResultCard(
     uiState: PadderUiState,
@@ -67,8 +65,6 @@ fun ProcessedResultCard(
     val processed = uiState.processedMetadata ?: return
     val processedBytes = uiState.processedBytes ?: return
     val originalBytes = uiState.originalBytes
-
-    var viewMode by remember { mutableStateOf(CompareViewMode.RESULT) }
 
     // Celebratory checkmark pop animation
     var popState by remember { mutableStateOf(false) }
@@ -157,114 +153,14 @@ fun ProcessedResultCard(
                 }
             }
 
-            // Interactive Compare Mode Switcher
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "View:",
-                    fontSize = 12.sp,
-                    fontFamily = FontFamily.Monospace,
-                    color = AppColors.TextSecondary,
-                    fontWeight = FontWeight.SemiBold
-                )
-
-                CompareModePill(
-                    label = "Result",
-                    isSelected = viewMode == CompareViewMode.RESULT,
-                    onClick = { viewMode = CompareViewMode.RESULT }
-                )
-                CompareModePill(
-                    label = "Original",
-                    isSelected = viewMode == CompareViewMode.ORIGINAL,
-                    onClick = { viewMode = CompareViewMode.ORIGINAL }
-                )
-                CompareModePill(
-                    label = "Split",
-                    isSelected = viewMode == CompareViewMode.SPLIT,
-                    onClick = { viewMode = CompareViewMode.SPLIT }
-                )
-            }
-
-            // Preview Section
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .border(1.dp, AppColors.CardBorder, RoundedCornerShape(14.dp))
-            ) {
-                Crossfade(targetState = viewMode, label = "compareViewCrossfade") { mode ->
-                    when (mode) {
-                        CompareViewMode.RESULT -> {
-                            val bitmap = remember(processedBytes) {
-                                BitmapFactory.decodeByteArray(processedBytes, 0, processedBytes.size)
-                            }
-                            CheckerboardBox(modifier = Modifier.fillMaxSize()) {
-                                if (bitmap != null) {
-                                    Image(
-                                        bitmap = bitmap.asImageBitmap(),
-                                        contentDescription = "Processed image preview",
-                                        modifier = Modifier.fillMaxSize().padding(6.dp),
-                                        contentScale = ContentScale.Fit
-                                    )
-                                }
-                            }
-                        }
-                        CompareViewMode.ORIGINAL -> {
-                            val bitmap = remember(originalBytes) {
-                                originalBytes?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
-                            }
-                            CheckerboardBox(modifier = Modifier.fillMaxSize()) {
-                                if (bitmap != null) {
-                                    Image(
-                                        bitmap = bitmap.asImageBitmap(),
-                                        contentDescription = "Original image preview",
-                                        modifier = Modifier.fillMaxSize().padding(6.dp),
-                                        contentScale = ContentScale.Fit
-                                    )
-                                }
-                            }
-                        }
-                        CompareViewMode.SPLIT -> {
-                            Row(
-                                modifier = Modifier.fillMaxSize(),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                val origBmp = remember(originalBytes) {
-                                    originalBytes?.let { BitmapFactory.decodeByteArray(it, 0, it.size) }
-                                }
-                                CheckerboardBox(modifier = Modifier.weight(1f).fillMaxSize()) {
-                                    if (origBmp != null) {
-                                        Image(
-                                            bitmap = origBmp.asImageBitmap(),
-                                            contentDescription = "Original",
-                                            modifier = Modifier.fillMaxSize().padding(4.dp),
-                                            contentScale = ContentScale.Fit
-                                        )
-                                    }
-                                }
-
-                                val procBmp = remember(processedBytes) {
-                                    BitmapFactory.decodeByteArray(processedBytes, 0, processedBytes.size)
-                                }
-                                CheckerboardBox(modifier = Modifier.weight(1f).fillMaxSize()) {
-                                    if (procBmp != null) {
-                                        Image(
-                                            bitmap = procBmp.asImageBitmap(),
-                                            contentDescription = "Processed",
-                                            modifier = Modifier.fillMaxSize().padding(4.dp),
-                                            contentScale = ContentScale.Fit
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            // Interactive Image Comparison Slider Viewer (Old vs New)
+            ImageComparisonSlider(
+                originalBytes = originalBytes,
+                originalMetadata = uiState.originalMetadata,
+                processedBytes = processedBytes,
+                processedMetadata = processed,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             // Properties row
             Row(
@@ -335,35 +231,6 @@ fun ProcessedResultCard(
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun CompareModePill(
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    val bg = if (isSelected) AppColors.ActivePillBackground else AppColors.DarkPillBackground
-    val textColor = if (isSelected) AppColors.ActivePillText else AppColors.DarkPillText
-    val borderCol = if (isSelected) AppColors.ActivePillBackground else AppColors.DarkPillBorder
-
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(bg)
-            .border(1.dp, borderCol, RoundedCornerShape(8.dp))
-            .clickable(onClick = onClick)
-            .padding(horizontal = 10.dp, vertical = 5.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = label,
-            color = textColor,
-            fontSize = 12.sp,
-            fontFamily = FontFamily.Monospace,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-        )
     }
 }
 
