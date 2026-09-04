@@ -143,25 +143,6 @@ class ImagePadderViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(PadderUiState())
     val uiState: StateFlow<PadderUiState> = _uiState.asStateFlow()
 
-    init {
-        // Pre-populate with standard sample exported gallery items matching reference screens
-        viewModelScope.launch(Dispatchers.Default) {
-            val (m1, b1) = ImageUtils.createMechWatchSample()
-            val (m2, b2) = ImageUtils.createServerRoomSample()
-            val (m3, b3) = ImageUtils.createAbstractGeoSample()
-            val (m4, b4) = ImageUtils.createSciFiHudSample()
-
-            val items = listOf(
-                ExportedImageItem(fileName = "Mech_Watch_01.png", metadata = m1, bytes = b1),
-                ExportedImageItem(fileName = "Server_Room_Deep.jpg", metadata = m2, bytes = b2),
-                ExportedImageItem(fileName = "Abstract_Geo_Dark.png", metadata = m3, bytes = b3),
-                ExportedImageItem(fileName = "Telemetry_HUD_04.png", metadata = m4, bytes = b4)
-            )
-
-            _uiState.update { it.copy(exportedImages = items) }
-        }
-    }
-
     fun switchTab(tabIndex: Int) {
         _uiState.update { it.copy(currentTab = tabIndex) }
     }

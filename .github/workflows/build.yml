@@ -83,6 +83,15 @@ jobs:
           KEY_PASSWORD: ${{ env.KEY_PWD }}
         run: ./gradlew assembleDebug assembleRelease --stacktrace --no-daemon --max-workers=2
 
+      - name: Verify launcher classes are packaged
+        run: |
+          for apk in app/build/outputs/apk/debug/*.apk app/build/outputs/apk/release/*.apk; do
+            test -s "$apk"
+            test "$(stat -c%s "$apk")" -gt 1048576
+            apkanalyzer manifest print "$apk" | grep -q 'com.umair.exactpic.MainActivity'
+            apkanalyzer dex packages --defined-only "$apk" | grep -q 'com.umair.exactpic.MainActivity'
+          done
+
       - name: Upload APK Artifacts
         uses: actions/upload-artifact@v4
         with:
