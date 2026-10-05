@@ -147,6 +147,12 @@ class ImagePadderViewModel : ViewModel() {
         _uiState.update { it.copy(currentTab = tabIndex) }
     }
 
+    fun deleteExportedItem(item: ExportedImageItem) {
+        _uiState.update {
+            it.copy(exportedImages = it.exportedImages.filterNot { it.id == item.id })
+        }
+    }
+
     fun selectScalePreset(percent: Int) {
         val origMeta = _uiState.value.originalMetadata ?: return
         val factor = percent / 100.0

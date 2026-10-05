@@ -362,7 +362,8 @@ fun ImagePadderScreen(
                             if (intent != null) {
                                 context.startActivity(Intent.createChooser(intent, "Share Exported Image"))
                             }
-                        }
+                        },
+                        onDelete = { viewModel.deleteExportedItem(it) }
                     )
                 }
             }
