@@ -6,6 +6,7 @@ import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -58,10 +59,12 @@ fun PadderBottomBar(
             selected = currentTab == 0,
             onClick = { onTabSelected(0) },
             modifier = Modifier.testTag("nav_tab_canvas"),
-            selectedIconColor = AppColors.NavTextActive,
-            unselectedIconColor = AppColors.NavInactive,
-            selectedContentColor = AppColors.NavTextActive,
-            unselectedContentColor = AppColors.NavInactive
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = AppColors.NavTextActive,
+                selectedTextColor = AppColors.NavTextActive,
+                unselectedIconColor = AppColors.NavInactive,
+                unselectedTextColor = AppColors.NavInactive
+            )
         )
 
         NavigationBarItem(
@@ -85,10 +88,12 @@ fun PadderBottomBar(
             selected = currentTab == 1,
             onClick = { onTabSelected(1) },
             modifier = Modifier.testTag("nav_tab_export"),
-            selectedIconColor = AppColors.NavTextActive,
-            unselectedIconColor = AppColors.NavInactive,
-            selectedContentColor = AppColors.NavTextActive,
-            unselectedContentColor = AppColors.NavInactive
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = AppColors.NavTextActive,
+                selectedTextColor = AppColors.NavTextActive,
+                unselectedIconColor = AppColors.NavInactive,
+                unselectedTextColor = AppColors.NavInactive
+            )
         )
     }
 }
