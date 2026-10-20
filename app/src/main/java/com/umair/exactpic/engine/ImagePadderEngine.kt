@@ -7,8 +7,6 @@ import com.umair.exactpic.model.ImageMetadata
 import com.umair.exactpic.model.PaddingMethod
 import java.io.ByteArrayOutputStream
 import java.util.zip.CRC32
-import kotlin.math.max
-import kotlin.math.min
 
 sealed class ProcessResult {
     data class Success(
@@ -252,7 +250,7 @@ object ImagePadderEngine {
         while (remainingPad >= 4) {
             // Marker overhead is 4 bytes: 0xFF, 0xFE, len_hi, len_lo
             // Maximum payload per COM marker is 65533 bytes (since 65533 + 2 <= 65535)
-            val payloadSize = min(remainingPad - 4, 65533L).toInt()
+            val payloadSize = minOf(remainingPad - 4, 65533L).toInt()
             val markerLength = payloadSize + 2
 
             out.write(0xFF)
@@ -368,7 +366,7 @@ object ImagePadderEngine {
         // Keyword "Pad" + null byte = 4 bytes
         val keywordBytes = "Pad".toByteArray(Charsets.ISO_8859_1)
         val chunkData = ByteArray(dataLength)
-        System.arraycopy(keywordBytes, 0, chunkData, 0, min(keywordBytes.size, dataLength))
+        System.arraycopy(keywordBytes, 0, chunkData, 0, minOf(keywordBytes.size, dataLength))
         if (dataLength > keywordBytes.size) {
             chunkData[keywordBytes.size] = 0 // null separator
         }

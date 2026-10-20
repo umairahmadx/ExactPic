@@ -120,7 +120,7 @@ fun ExportedImageCard(
         Column(modifier = Modifier.fillMaxWidth()) {
             // Image with aspect-ratio-aware sizing
             val aspectRatio = if (meta.height > 0) meta.width.toFloat() / meta.height.toFloat() else 1f
-            val displayHeight = (320.dp * 1.0f / aspectRatio.max(0.5f).min(2.5f)).coerceIn(140.dp, 280.dp)
+            val displayHeight = (320.dp * 1.0f / aspectRatio.coerceIn(0.5f, 2.5f)).coerceIn(140.dp, 280.dp)
 
             CheckerboardBox(
                 modifier = Modifier
