@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FileDownload
@@ -29,6 +31,7 @@ import androidx.compose.material.icons.filled.Storage
 import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -37,12 +40,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.umair.exactpic.ui.theme.AppColors
@@ -164,7 +169,7 @@ fun ExportedImageCard(
                         fontFamily = FontFamily.Monospace,
                         fontWeight = FontWeight.Medium,
                         maxLines = 1,
-                        overflow = androidx.compose.ui.text.TextOverflow.Ellipsis,
+                        overflow = TextOverflow.Ellipsis,
                         modifier = Modifier
                             .weight(1f)
                             .padding(horizontal = 12.dp)
@@ -178,7 +183,7 @@ fun ExportedImageCard(
                             .testTag("delete_${item.fileName}")
                     ) {
                         Icon(
-                            imageVector = Delete,
+                            imageVector = Icons.Filled.Delete,
                             contentDescription = "Delete exported image",
                             tint = AppColors.TextSecondary,
                             modifier = Modifier.size(20.dp)
@@ -192,24 +197,24 @@ fun ExportedImageCard(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     MetadataChip(
-                        icon = Crop,
+                        icon = Icons.Filled.Crop,
                         label = "Dimensions",
                         value = "${meta.width} × ${meta.height} px"
                     )
                     MetadataChip(
-                        icon = Storage,
+                        icon = Icons.Filled.Storage,
                         label = "File Size",
                         value = meta.formattedKB
                     )
                     MetadataChip(
-                        icon = AspectRatio,
+                        icon = Icons.Filled.AspectRatio,
                         label = "Aspect Ratio",
                         value = meta.aspectRatioLabel
                     )
                 }
 
                 // Divider
-                androidx.compose.foundation.Divider(
+                HorizontalDivider(
                     color = AppColors.Divider,
                     thickness = 0.5.dp,
                     modifier = Modifier.fillMaxWidth()
@@ -224,7 +229,7 @@ fun ExportedImageCard(
                     // Download button (primary)
                     ExportActionButton(
                         text = "Save",
-                        icon = FileDownload,
+                        icon = Icons.Filled.FileDownload,
                         onClick = onDownload,
                         isPrimary = true,
                         modifier = Modifier.weight(1f).testTag("download_${item.fileName}")
@@ -233,7 +238,7 @@ fun ExportedImageCard(
                     // Share button (secondary)
                     ExportActionButton(
                         text = "Share",
-                        icon = Share,
+                        icon = Icons.Filled.Share,
                         onClick = onShare,
                         isPrimary = false,
                         modifier = Modifier.weight(1f).testTag("share_${item.fileName}")
@@ -242,7 +247,7 @@ fun ExportedImageCard(
                     // Info button
                     ExportActionButton(
                         text = "Details",
-                        icon = Info,
+                        icon = Icons.Filled.Info,
                         onClick = { /* TODO: show detail dialog */ },
                         isPrimary = false,
                         modifier = Modifier.weight(1f).testTag("info_${item.fileName}")
@@ -256,10 +261,10 @@ fun ExportedImageCard(
 @Composable
 private fun FormatBadge(format: ImageFormat) {
     val (bgColor, textColor, label) = when (format) {
-        ImageFormat.JPEG -> AppColors.CardBorder to AppColors.TextSecondary to "JPEG"
-        ImageFormat.PNG -> AppColors.CardBorder to AppColors.TextSecondary to "PNG"
-        ImageFormat.WEBP -> AppColors.CardBorder to AppColors.TextSecondary to "WEBP"
-        else -> AppColors.CardBorder to AppColors.TextSecondary to "RAW"
+        ImageFormat.JPEG -> Triple(AppColors.CardBorder, AppColors.TextSecondary, "JPEG")
+        ImageFormat.PNG -> Triple(AppColors.CardBorder, AppColors.TextSecondary, "PNG")
+        ImageFormat.WEBP -> Triple(AppColors.CardBorder, AppColors.TextSecondary, "WEBP")
+        else -> Triple(AppColors.CardBorder, AppColors.TextSecondary, "RAW")
     }
 
     Box(
@@ -280,7 +285,7 @@ private fun FormatBadge(format: ImageFormat) {
 }
 
 @Composable
-private fun MetadataChip(
+private fun RowScope.MetadataChip(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     label: String,
     value: String
