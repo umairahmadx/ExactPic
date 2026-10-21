@@ -197,8 +197,11 @@ fun ExportedImageCard(
 
                 // Metadata grid
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     MetadataChip(
                         icon = Icons.Filled.Crop,
@@ -301,7 +304,8 @@ private fun RowScope.MetadataChip(
             .padding(vertical = 4.dp)
             .background(AppColors.SurfaceDark, RoundedCornerShape(8.dp))
             .padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Icon(
             imageVector = icon,
