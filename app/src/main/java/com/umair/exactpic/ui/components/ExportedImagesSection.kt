@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -60,6 +61,7 @@ fun ExportedImagesSection(
     onDownload: (ExportedImageItem) -> Unit,
     onShare: (ExportedImageItem) -> Unit,
     onDelete: (ExportedImageItem) -> Unit,
+    onDetails: (ExportedImageItem) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     if (exportedImages.isEmpty()) {
@@ -93,7 +95,8 @@ fun ExportedImagesSection(
                     item = item,
                     onDownload = { onDownload(item) },
                     onShare = { onShare(item) },
-                    onDelete = { onDelete(item) }
+                    onDelete = { onDelete(item) },
+                    onDetails = { onDetails(item) }
                 )
             }
         }
@@ -106,6 +109,7 @@ fun ExportedImageCard(
     onDownload: () -> Unit,
     onShare: () -> Unit,
     onDelete: () -> Unit,
+    onDetails: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val bitmap = remember(item.bytes) {
@@ -248,7 +252,7 @@ fun ExportedImageCard(
                     ExportActionButton(
                         text = "Details",
                         icon = Icons.Filled.Info,
-                        onClick = { /* TODO: show detail dialog */ },
+                        onClick = onDetails,
                         isPrimary = false,
                         modifier = Modifier.weight(1f).testTag("info_${item.fileName}")
                     )
@@ -293,6 +297,7 @@ private fun RowScope.MetadataChip(
     Column(
         modifier = Modifier
             .weight(1f)
+            .heightIn(min = 88.dp)
             .padding(vertical = 4.dp)
             .background(AppColors.SurfaceDark, RoundedCornerShape(8.dp))
             .padding(12.dp),

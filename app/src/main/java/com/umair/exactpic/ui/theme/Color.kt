@@ -65,7 +65,7 @@ object AppColors {
     val BottomBarBackground = Color(0xFF000000)
     val BottomBarBorder = Color(0xFF1C1C1E)
     val NavPillActive = Color(0xFFFFFFFF)
-    val NavTextActive = Color(0xFF000000)
+    val NavTextActive = Color(0xFFFFFFFF)
     val NavInactive = Color(0xFF8E8E93)
 
     // Image Checkerboard Pattern for transparent backdrop
